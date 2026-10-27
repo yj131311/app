@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>플랜잇 | 시험 공부 플래너</title>
+<style>
+:root{--navy:#25345b;--blue:#5269c9;--blue2:#e9edff;--ink:#20263a;--muted:#7b8298;--line:#e6e9f2;--bg:#f6f7fb;--white:#fff;--green:#218765;--orange:#d98735;--red:#c94b57}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);line-height:1.5}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{max-width:1180px;margin:0 auto;padding:28px 24px 54px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:15px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:800;font-size:22px;box-shadow:0 7px 16px #25345b25}
+.brand h1{font-size:24px;letter-spacing:-.8px;margin:0}
+.brand p{font-size:12px;color:var(--muted);margin:2px 0 0}
+.header-date{font-size:13px;color:var(--muted);background:white;border:1px solid var(--line);border-radius:999px;padding:9px 14px}
+.hero{background:linear-gradient(120deg,#25345b,#475ba5);color:white;padding:28px 30px;border-radius:24px;display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:20px;overflow:hidden}
+.hero h2{font-size:26px;line-height:1.35;margin:0 0 9px;letter-spacing:-.7px}
+.hero p{color:#e0e5ff;margin:0;font-size:14px;max-width:620px}
+.hero-mark{font-size:64px;opacity:.95;flex-shrink:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat,.panel{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:0 4px 16px #26365b05}
+.stat{padding:17px 19px}
+.stat .label{font-size:12px;color:var(--muted);margin-bottom:7px}
+.stat .value{font-size:25px;font-weight:750;letter-spacing:-.6px}
+.stat .sub{font-size:11px;color:var(--muted);margin-top:3px}
+.layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:20px;align-items:start}
+.panel{padding:22px;margin-bottom:18px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:17px}
+.panel h3{margin:0;font-size:17px;letter-spacing:-.3px}
+.panel-desc{font-size:12px;color:var(--muted);margin:5px 0 0}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#515a72}
+input,textarea,select{width:100%;border:1px solid #dfe3ee;border-radius:10px;padding:11px 12px;background:#fff;color:var(--ink);outline:none;transition:.15s}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #5269c91a}
+textarea{resize:vertical;min-height:78px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:10px 14px;border-radius:10px;font-weight:700;font-size:13px;transition:.15s}
+.btn-primary{background:var(--blue);color:white}
+.btn-primary:hover{background:#4056b6}
+.btn-light{background:var(--blue2);color:var(--blue)}
+.btn-outline{background:white;border:1px solid var(--line);color:#5d6680}
+.btn-danger{background:#fff0f1;color:var(--red)}
+.btn-small{padding:7px 10px;font-size:12px}
+.full{width:100%}
+.form-actions{display:flex;gap:8px;margin-top:16px}
+.form-actions .btn{flex:1}
+.subject-list{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.subject-item{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:flex-start;gap:10px}
+.subject-dot{width:9px;height:9px;border-radius:50%;background:var(--blue);margin-top:6px;flex-shrink:0}
+.subject-info{flex:1;min-width:0}
+.subject-info strong{font-size:13px;display:block;overflow-wrap:anywhere}
+.subject-info span{font-size:11px;color:var(--muted);display:block;margin-top:3px}
+.subject-actions{display:flex;gap:4px}
+.icon-btn{padding:5px 7px;border-radius:7px;background:#f4f5fa;color:#66708a;font-size:11px}
+.empty{padding:22px 10px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed #dce1ee;border-radius:12px}
+.right-col{min-width:0}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tabs{display:flex;gap:5px;background:#eef0f7;border-radius:11px;padding:4px}
+.tab{padding:8px 13px;border-radius:8px;background:transparent;color:#707990;font-size:12px;font-weight:700}
+.tab.active{background:white;color:var(--navy);box-shadow:0 2px 6px #20263a0d}
+.plan-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:18px}
+.plan-top h3{margin:0}
+.plan-top p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.progress-wrap{min-width:110px;text-align:right}
+.progress-number{font-weight:800;font-size:18px}
+.progress-track{height:6px;border-radius:9px;background:#edf0f7;overflow:hidden;margin-top:5px}
+.progress-fill{height:100%;background:var(--blue);border-radius:9px;transition:width .2s}
+.day-selector{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 12px;margin-bottom:8px}
+.day-chip{min-width:78px;text-align:left;border:1px solid var(--line);background:white;border-radius:12px;padding:10px 11px;color:var(--ink)}
+.day-chip .dow{font-size:10px;color:var(--muted);display:block}
+.day-chip .date{font-size:13px;font-weight:750;display:block;margin-top:2px}
+.day-chip .count{font-size:10px;color:var(--blue);display:block;margin-top:4px}
+.day-chip.active{border-color:var(--blue);background:var(--blue2)}
+.day-chip.active .date{color:var(--blue)}
+.task-list{display:flex;flex-direction:column;gap:9px}
+.task{display:flex;gap:11px;padding:13px;border:1px solid var(--line);border-radius:12px;align-items:flex-start}
+.task.done{background:#f9fbfa}
+.task input[type=checkbox]{width:17px;height:17px;margin:3px 0 0;accent-color:var(--green);flex-shrink:0}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:13px;font-weight:700}
+.task.done .task-title{text-decoration:line-through;color:#8d95a6}
+.task-meta{font-size:11px;color:var(--muted);margin-top:4px}
+.pill{font-size:10px;padding:4px 7px;border-radius:6px;background:#edf0ff;color:var(--blue);white-space:nowrap}
+.pill.green{background:#e5f5ee;color:var(--green)}
+.pill.orange{background:#fff1df;color:#b16b20}
+.task-top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.section-title{font-size:13px;font-weight:800;margin:22px 0 10px}
+.priority-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.priority-card{padding:13px;border:1px solid var(--line);border-radius:12px}
+.priority-rank{font-size:10px;color:var(--blue);font-weight:800;margin-bottom:5px}
+.priority-card strong{font-size:13px}
+.priority-card p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.notice{padding:12px 14px;border-radius:11px;background:#fff7e9;color:#916021;font-size:12px;margin-top:14px}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#20263a;color:white;padding:11px 16px;border-radius:10px;font-size:13px;box-shadow:0 8px 28px #0002;z-index:10;max-width:90vw}
+.footer-note{font-size:11px;color:var(--muted);text-align:center;margin-top:22px}
+.modal-backdrop{position:fixed;inset:0;background:#11182780;display:grid;place-items:center;padding:18px;z-index:20}
+.modal{background:white;border-radius:18px;padding:24px;width:min(520px,100%);max-height:90vh;overflow:auto}
+.modal h3{margin:0 0 16px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero{padding:24px}.hero-mark{font-size:48px}.app{padding:18px 14px 36px}}
+@media(max-width:480px){header{align-items:flex-start}.header-date{font-size:10px;padding:7px 9px}.brand h1{font-size:21px}.hero h2{font-size:21px}.hero-mark{display:none}.panel{padding:17px}.stats{gap:9px}.stat{padding:13px}.stat .value{font-size:22px}.two{grid-template-columns:1fr}.priority-list{grid-template-columns:1fr}.plan-top{flex-direction:column}.progress-wrap{width:100%;text-align:left}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="logo">P</div><div><h1>플랜잇 <span style="font-weight:400;color:#69738e">(Plan it)</span></h1><p>시험 공부 계획과 D-Day 관리</p></div></div>
+    <div class="header-date" id="todayLabel"></div>
+  </header>
+  <section class="hero">
+    <div><h2>막막한 시험 공부,<br>오늘 할 일부터 시작해요.</h2><p>과목과 시험일, 학습 범위를 입력하면 남은 기간에 맞춰 하루 단위 계획을 만들어 드려요.</p></div>
+    <div class="hero-mark">✦</div>
+  </section>
+  <section class="stats">
+    <div class="stat"><div class="label">등록 과목</div><div class="value" id="statSubjects">0</div><div class="sub">개의 시험 과목</div></div>
+    <div class="stat"><div class="label">가장 가까운 시험</div><div class="value" id="statDday">—</div><div class="sub" id="statNext">시험일을 등록해 주세요</div></div>
+    <div class="stat"><div class="label">전체 학습 항목</div><div class="value" id="statTasks">0</div><div class="sub">개의 할 일</div></div>
+    <div class="stat"><div class="label">전체 진행률</div><div class="value" id="statProgress">0%</div><div class="sub">완료한 학습 항목 기준</div></div>
+  </section>
+
+  <div class="layout">
+    <aside>
+      <section class="panel">
+        <div class="panel-head"><div><h3 id="formTitle">과목 정보 입력</h3><p class="panel-desc">시험 일정과 학습 범위를 등록하세요.</p></div><span class="pill">STEP 01</span></div>
+        <form id="subjectForm">
+          <input type="hidden" id="editId">
+          <div class="field"><label for="subjectName">과목명 *</label><input id="subjectName" placeholder="예: 인체해부학" maxlength="60" required></div>
+          <div class="two">
+            <div class="field"><label for="examDate">시험일 *</label><input id="examDate" type="date" required></div>
+            <div class="field"><label for="studyType">학습 단위</label><select id="studyType"><option value="단원">단원</option><option value="페이지">페이지</option><option value="강의">강의</option><option value="문제">문제</option><option value="시간">시간</option></select></div>
+          </div>
+          <div class="field"><label for="studyAmount">전체 학습 분량 *</label><input id="studyAmount" type="number" min="1" max="10000" placeholder="예: 12" required></div>
+          <div class="field"><label for="studyScope">학습 범위 및 메모 *</label><textarea id="studyScope" placeholder="예: 1~6단원, 핵심 개념 정리와 복습 문제" maxlength="600" required></textarea></div>
+          <div class="form-actions"><button class="btn btn-primary" id="saveSubjectBtn" type="submit">과목 추가</button><button class="btn btn-outline hidden" id="cancelEditBtn" type="button">취소</button></div>
+        </form>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div><h3>등록한 과목</h3><p class="panel-desc">과목별 분량과 시험일을 관리하세요.</p></div><span class="pill" id="subjectCountPill">0과목</span></div>
+        <div class="subject-list" id="subjectList"><div class="empty">아직 등록된 과목이 없어요.<br>위에서 첫 과목을 추가해 주세요.</div></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div><h3>계획 설정</h3><p class="panel-desc">공부할 날짜의 범위를 정하세요.</p></div></div>
+        <div class="field"><label for="startDate">공부 시작일</label><input id="startDate" type="date"></div>
+        <div class="field"><label for="dailyHours">하루 목표 공부 시간</label><select id="dailyHours"><option value="1">1시간</option><option value="2" selected>2시간</option><option value="3">3시간</option><option value="4">4시간</option><option value="5">5시간 이상</option></select></div>
+        <button class="btn btn-primary full" id="generateBtn">✦ 학습 계획 생성</button>
+        <p class="panel-desc" style="margin-top:10px">입력한 정보에 따라 분량을 날짜별로 자동 배분합니다. 외부 AI 연결 없이 브라우저에서 계획을 계산합니다.</p>
+      </section>
+    </aside>
+
+    <main class="right-col">
+      <section class="panel">
+        <div class="toolbar">
+          <div><h3>나의 학습 플랜</h3><p class="panel-desc" id="planSubtitle">과목을 등록하고 학습 계획을 생성해 보세요.</p></div>
+          <div class="tabs"><button class="tab active" data-view="daily">일일 계획</button><button class="tab" data-view="all">전체 계획</button><button class="tab" data-view="priority">우선순위</button></div>
+        </div>
+        <div id="dailyView">
+          <div class="day-selector" id="daySelector"></div>
+          <div class="plan-top"><div><h3 id="selectedDayTitle">오늘의 할 일</h3><p id="selectedDayDesc">학습 계획이 생성되면 여기에 표시됩니다.</p></div><div class="progress-wrap"><div class="progress-number" id="dayProgress">0%</div><div class="progress-track"><div class="progress-fill" id="dayProgressFill" style="width:0%"></div></div></div></div>
+          <div class="task-list" id="dailyTasks"><div class="empty">아직 생성된 계획이 없어요.<br>과목을 등록한 뒤 ‘학습 계획 생성’을 눌러 주세요.</div></div>
+        </div>
+        <div id="allView" class="hidden"><div id="allTasks"></div></div>
+        <div id="priorityView" class="hidden"><div id="priorityList"></div></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div><h3>계획 다시 조정하기</h3><p class="panel-desc">못 끝낸 항목을 남은 날짜에 다시 배분합니다.</p></div><span class="pill orange">PLAN RESET</span></div>
+        <p style="font-size:13px;color:#606980;margin:0 0 14px">완료하지 못한 학습 항목은 유지하고, 남은 항목을 현재 날짜 이후의 일정에 다시 나눠 배치합니다.</p>
+        <button class="btn btn-light" id="replanBtn">미완료 항목 기준으로 재조정</button>
+        <button class="btn btn-outline" id="clearProgressBtn" style="margin-left:6px">완료 체크 초기화</button>
+      </section>
+    </main>
+  </div>
+  <div class="footer-note">플랜잇은 입력한 학습량과 일정에 따라 계획을 자동 배분하는 데모입니다. 실제 학습 난이도나 성취도를 자동 측정하지 않습니다.</div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<div id="modalRoot"></div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const todayISO=()=>{const d=new Date();d.setHours(0,0,0,0);return fmtISO(d)};
+const fmtISO=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const parseDate=s=>{const d=new Date(s+'T00:00:00');return isNaN(d)?null:d};
+const addDays=(s,n)=>{const d=parseDate(s);d.setDate(d.getDate()+n);return fmtISO(d)};
+const dayDiff=(a,b)=>Math.round((parseDate(b)-parseDate(a))/86400000);
+const prettyDate=s=>{const d=parseDate(s);return d?`${d.getMonth()+1}월 ${d.getDate()}일`:s};
+const weekday=s=>['일','월','화','수','목','금','토'][parseDate(s).getDay()];
+const uid=()=>Math.random().toString(36).slice(2,10);
+let subjects=[],tasks=[],selectedDate=todayISO(),activeView='daily',toastTimer;
+$('todayLabel').textContent=`오늘 ${prettyDate(todayISO())} (${weekday(todayISO())})`;
+$('startDate').value=todayISO();
+$('examDate').min=todayISO();
+
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),2600)}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function resetForm(){ $('subjectForm').reset();$('editId').value='';$('formTitle').textContent='과목 정보 입력';$('saveSubjectBtn').textContent='과목 추가';$('cancelEditBtn').classList.add('hidden');$('studyType').value='단원';$('examDate').min=todayISO() }
+function subjectById(id){return subjects.find(s=>s.id===id)}
+$('subjectForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const name=$('subjectName').value.trim(),date=$('examDate').value,amount=Number($('studyAmount').value),scope=$('studyScope').value.trim(),type=$('studyType').value,editId=$('editId').value;
+ if(!name||!date||!scope||!Number.isFinite(amount)||amount<1){toast('과목명, 시험일, 학습 분량과 범위를 모두 올바르게 입력해 주세요.');return}
+ if(date<todayISO()&&!editId){toast('시험일은 오늘 또는 미래 날짜로 입력해 주세요.');return}
+ const subject={id:editId||uid(),name,date,amount,scope,type};
+ if(editId){subjects=subjects.map(s=>s.id===editId?subject:s);tasks=tasks.filter(t=>t.subjectId!==editId);toast('과목 정보를 수정했어요. 학습 계획을 다시 생성해 주세요.')}
+ else{subjects.push(subject);toast('과목을 목록에 추가했어요.')}
+ resetForm();render(); 
+});
+$('cancelEditBtn').addEventListener('click',resetForm);
+function editSubject(id){const s=subjectById(id);if(!s)return;$('editId').value=s.id;$('subjectName').value=s.name;$('examDate').value=s.date;$('studyType').value=s.type;$('studyAmount').value=s.amount;$('studyScope').value=s.scope;$('formTitle').textContent='과목 정보 수정';$('saveSubjectBtn').textContent='수정 저장';$('cancelEditBtn').classList.remove('hidden');$('subjectName').focus();window.scrollTo({top:0,behavior:'smooth'})}
+function deleteSubject(id){const s=subjectById(id);if(!s)return;if(!confirm(`'${s.name}' 과목과 관련 학습 계획을 삭제할까요?`))return;subjects=subjects.filter(x=>x.id!==id);tasks=tasks.filter(t=>t.subjectId!==id);render();toast('과목을 삭제했어요.')}
+function renderSubjects(){
+ $('subjectCountPill').textContent=`${subjects.length}과목`;
+ $('subjectList').innerHTML=subjects.length?subjects.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(s=>`<div class="subject-item"><div class="subject-dot"></div><div class="subject-info"><strong>${escapeHTML(s.name)}</strong><span>시험 ${prettyDate(s.date)} · ${s.amount}${escapeHTML(s.type)}</span><span>${escapeHTML(s.scope)}</span></div><div class="subject-actions"><button class="icon-btn" data-edit="${s.id}">수정</button><button class="icon-btn" data-delete="${s.id}">삭제</button></div></div>`).join(''):'<div class="empty">아직 등록된 과목이 없어요.<br>위에서 첫 과목을 추가해 주세요.</div>';
+ $('subjectList').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editSubject(b.dataset.edit));
+ $('subjectList').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteSubject(b.dataset.delete));
+}
+function generatePlan(replan=false){
+ if(!subjects.length){toast('먼저 과목 정보와 시험 범위를 등록해 주세요.');return}
+ const start=$('startDate').value||todayISO();
+ if(start<todayISO()){toast('공부 시작일은 오늘 또는 미래 날짜로 설정해 주세요.');return}
+ for(const s of subjects){if(s.date<start){toast(`${s.name} 시험일이 공부 시작일보다 빠릅니다. 날짜를 확인해 주세요.`);return}}
+ const newTasks=[];
+ const hours=Number($('dailyHours').value)||2;
+ subjects.forEach(s=>{
+   const end=s.date,days=Math.max(1,dayDiff(start,end)+1);
+   const dailyCount=Math.ceil(s.amount/days);
+   let remaining=s.amount,unit=1;
+   for(let i=0;i<days&&remaining>0;i++){
+     const date=addDays(start,i);
+     // Keep the load spread across available dates and ensure all entered units are assigned.
+     const leftDays=days-i;
+     let amount=Math.ceil(remaining/leftDays);
+     amount=Math.min(amount,remaining);
+     // Last day before exam is weighted toward review, but all scope remains represented.
+     const isReview=(i===days-1&&days>1);
+     const title=isReview?`${s.name} 최종 복습`:`${s.name} ${s.type} 학습`;
+     const detail=isReview?`${s.scope} 핵심 내용과 헷갈리는 부분을 복습`:`${s.scope} 중 ${s.type} ${unit}~${unit+amount-1} 학습`;
+     newTasks.push({id:uid(),subjectId:s.id,subjectName:s.name,date,amount,type:s.type,title,detail,done:false,review:isReview,priority:0});
+     unit+=amount;remaining-=amount;
+   }
+ });
+ // For replan, preserve completed tasks and redistribute only incomplete work from today forward.
+ if(replan&&tasks.length){
+   const completed=tasks.filter(t=>t.done);
+   const unfinishedBySubject={};
+   tasks.filter(t=>!t.done).forEach(t=>{unfinishedBySubject[t.subjectId]=(unfinishedBySubject[t.subjectId]||0)+t.amount});
+   const retainedCompleted=completed.map(t=>({...t}));
+   const redistributed=[];
+   Object.entries(unfinishedBySubject).forEach(([sid,total])=>{
+     const s=subjectById(sid);if(!s)return;
+     const from=todayISO(),to=s.date;
+     const days=Math.max(1,dayDiff(from,to)+1),count=Math.min(total,days);
+     let left=total;
+     for(let i=0;i<count&&left>0;i++){
+       const amount=Math.ceil(left/(count-i));left-=amount;
+       const date=addDays(from,i);
+       redistributed.push({id:uid(),subjectId:s.id,subjectName:s.name,date,amount,type:s.type,title:`${s.name} 남은 학습`,detail:`${s.scope} 중 미완료 분량 ${amount}${s.type} 진행`,done:false,review:false,priority:0});
+     }
+   });
+   tasks=retainedCompleted.concat(redistributed);
+   toast('완료한 항목은 유지하고 미완료 분량을 다시 배분했어요.');
+ }else{
+   tasks=newTasks;
+   toast('학습 계획을 생성했어요.');
+ }
+ tasks.sort((a,b)=>a.date.localeCompare(b.date)||a.subjectName.localeCompare(b.subjectName));
+ selectedDate=tasks.some(t=>t.date===todayISO())?todayISO():tasks[0]?.date||start;
+ updatePriorities();render();
+}
+function updatePriorities(){
+ const sorted=subjects.map(s=>{
+   const left=tasks.filter(t=>t.subjectId===s.id&&!t.done).reduce((n,t)=>n+t.amount,0);
+   const d=dayDiff(todayISO(),s.date);
+   return {...s,left,d,score:(d<0?9999:1/(d+1))*1.5+left/Math.max(1,d+1)};
+ }).sort((a,b)=>b.score-a.score);
+ sorted.forEach((s,i)=>s.rank=i+1);window.prioritySubjects=sorted;
+}
+function allDates(){return [...new Set(tasks.map(t=>t.date))].sort()}
+function renderStats(){
+ const next=subjects.filter(s=>s.date>=todayISO()).sort((a,b)=>a.date.localeCompare(b.date))[0];
+ $('statSubjects').textContent=subjects.length;
+ $('statDday').textContent=next?(dayDiff(todayISO(),next.date)===0?'D-Day':`D-${dayDiff(todayISO(),next.date)}`):'—';
+ $('statNext').textContent=next?next.name:'시험일을 등록해 주세요';
+ $('statTasks').textContent=tasks.length;
+ const done=tasks.filter(t=>t.done).length;
+ $('statProgress').textContent=tasks.length?Math.round(done/tasks.length*100)+'%':'0%';
+ $('planSubtitle').textContent=tasks.length?`${subjects.length}개 과목 · ${allDates().length}일 학습 계획`:'과목을 등록하고 학습 계획을 생성해 보세요.';
+}
+function renderDays(){
+ const dates=allDates();
+ $('daySelector').innerHTML=dates.length?dates.map(d=>{const list=tasks.filter(t=>t.date===d),done=list.filter(t=>t.done).length;return `<button class="day-chip ${d===selectedDate?'active':''}" data-date="${d}"><span class="dow">${d===todayISO()?'오늘':weekday(d)+'요일'}</span><span class="date">${prettyDate(d)}</span><span class="count">${done}/${list.length} 완료</span></button>`}).join(''):'<div class="empty" style="width:100%">계획을 생성하면 날짜별 목록이 표시됩니다.</div>';
+ $('daySelector').querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{selectedDate=b.dataset.date;renderDaily()});
+}
+function taskHTML(t){
+ return `<div class="task ${t.done?'done':''}"><input type="checkbox" aria-label="학습 완료" data-task="${t.id}" ${t.done?'checked':''}><div class="task-body"><div class="task-top"><div class="task-title">${escapeHTML(t.title)}</div><span class="pill ${t.done?'green':t.review?'orange':''}">${t.done?'완료':t.review?'복습':`${t.amount}${escapeHTML(t.type)}`}</span></div><div class="task-meta">${escapeHTML(t.detail)}</div></div></div>`;
+}
+function attachTaskEvents(root){
+ root.querySelectorAll('[data-task]').forEach(cb=>cb.onchange=()=>{const t=tasks.find(x=>x.id===cb.dataset.task);if(t){t.done=cb.checked;render();}});
+}
+function renderDaily(){
+ renderDays();
+ const list=tasks.filter(t=>t.date===selectedDate);
+ $('selectedDayTitle').textContent=selectedDate?`${prettyDate(selectedDate)}의 할 일`:'오늘의 할 일';
+ $('selectedDayDesc').textContent=list.length?`${list.length}개 학습 항목 · ${list.filter(t=>t.done).length}개 완료`:'이 날짜에 등록된 학습 항목이 없습니다.';
+ const done=list.filter(t=>t.done).length,pct=list.length?Math.round(done/list.length*100):0;
+ $('dayProgress').textContent=pct+'%';$('dayProgressFill').style.width=pct+'%';
+ $('dailyTasks').innerHTML=list.length?list.map(taskHTML).join(''):'<div class="empty">이 날짜에는 계획된 학습 항목이 없어요.</div>';
+ attachTaskEvents($('dailyTasks'));
+}
+function renderAll(){
+ const dates=allDates();
+ $('allTasks').innerHTML=dates.length?dates.map(d=>{const list=tasks.filter(t=>t.date===d);return `<div class="section-title">${prettyDate(d)} (${weekday(d)}) · ${list.filter(t=>t.done).length}/${list.length} 완료</div><div class="task-list">${list.map(taskHTML).join('')}</div>`}).join(''):'<div class="empty">아직 전체 계획이 없어요.</div>';
+ attachTaskEvents($('allTasks'));
+}
+function renderPriority(){
+ updatePriorities();
+ const list=window.prioritySubjects||[];
+ $('priorityList').innerHTML=list.length?`<div class="panel-desc" style="margin-bottom:14px">시험일까지 남은 기간과 미완료 분량을 기준으로 계산한 참고 순위입니다.</div><div class="priority-list">${list.map(s=>`<div class="priority-card"><div class="priority-rank">PRIORITY 0${s.rank}</div><strong>${escapeHTML(s.name)}</strong><p>시험일 ${prettyDate(s.date)} · ${s.d<0?'시험일 지남':s.d===0?'D-Day':`D-${s.d}`}</p><p>남은 학습량: ${s.left}${escapeHTML(s.type)}</p><p>${s.d<=2?'시험이 임박해 우선 확인이 필요합니다.':s.left>0?'남은 학습량을 나누어 진행하세요.':'등록된 학습 항목을 완료했습니다.'}</p></div>`).join('')}</div><div class="notice">우선순위는 시험일까지 남은 날짜와 입력된 분량으로 산정한 단순 기준입니다. 실제 난이도, 배점, 개인별 이해도는 반영되지 않습니다.</div>`:'<div class="empty">과목을 등록하면 우선순위를 확인할 수 있어요.</div>';
+}
+function render(){
+ renderSubjects();renderStats();
+ if(activeView==='daily')renderDaily();else if(activeView==='all')renderAll();else renderPriority();
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+ activeView=b.dataset.view;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
+ $('dailyView').classList.toggle('hidden',activeView!=='daily');$('allView').classList.toggle('hidden',activeView!=='all');$('priorityView').classList.toggle('hidden',activeView!=='priority');
+ if(activeView==='all')renderAll();if(activeView==='priority')renderPriority();
+}));
+$('generateBtn').addEventListener('click',()=>generatePlan(false));
+$('replanBtn').addEventListener('click',()=>{if(!tasks.length){toast('먼저 학습 계획을 생성해 주세요.');return}if(!tasks.some(t=>!t.done)){toast('재조정할 미완료 항목이 없습니다.');return}generatePlan(true)});
+$('clearProgressBtn').addEventListener('click',()=>{if(!tasks.length){toast('초기화할 학습 계획이 없습니다.');return}if(!confirm('모든 학습 항목의 완료 체크를 초기화할까요?'))return;tasks.forEach(t=>t.done=false);render();toast('완료 체크를 초기화했어요.')});
+$('startDate').addEventListener('change',()=>{if($('startDate').value<todayISO()){$('startDate').value=todayISO();toast('공부 시작일은 오늘 이후로 설정해 주세요.')}});
+render();
+})();
+</script>
+</body>
+</html>
